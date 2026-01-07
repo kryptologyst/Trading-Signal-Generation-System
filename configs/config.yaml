@@ -1,0 +1,87 @@
+# Trading Signal Generation Configuration
+
+data:
+  symbols: ["AAPL", "MSFT", "GOOGL"]
+  start_date: "2020-01-01"
+  end_date: "2024-01-01"
+  data_source: "yfinance"
+  cache_dir: "data/cache"
+  features_cache: "data/features.parquet"
+  labels_cache: "data/labels.parquet"
+
+features:
+  # Technical indicators
+  macd_params:
+    fast: 12
+    slow: 26
+    signal: 9
+  rsi_params:
+    window: 14
+    overbought: 70
+    oversold: 30
+  sma_windows: [5, 10, 20, 50, 100, 200]
+  ema_windows: [5, 10, 20, 50, 100, 200]
+  bollinger_params:
+    window: 20
+    std: 2.0
+  
+  # Advanced features
+  volume_features: true
+  volatility_features: true
+  momentum_features: true
+  microstructure_features: false
+  
+  # Feature selection
+  max_features: 100
+  feature_selection_method: "mutual_info"
+
+model:
+  # Model types
+  models: ["technical", "xgboost", "lightgbm"]
+  
+  # Cross-validation
+  cv_method: "time_series_split"
+  n_splits: 5
+  test_size: 0.2
+  purged_pct: 0.01
+  embargo_pct: 0.01
+  
+  # Training parameters
+  random_state: 42
+  n_jobs: -1
+  
+  # XGBoost parameters
+  xgb_params:
+    max_depth: 6
+    learning_rate: 0.1
+    n_estimators: 100
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+  
+  # LightGBM parameters
+  lgb_params:
+    max_depth: 6
+    learning_rate: 0.1
+    n_estimators: 100
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+
+backtest:
+  initial_capital: 100000.0
+  transaction_cost: 0.001
+  slippage: 0.0005
+  max_position_size: 0.1
+  rebalance_frequency: "daily"
+  
+  # Risk management
+  stop_loss: null
+  take_profit: null
+  max_drawdown: 0.2
+
+# General settings
+output_dir: "outputs"
+assets_dir: "assets"
+log_level: "INFO"
+device: "auto"
